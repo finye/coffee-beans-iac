@@ -21,12 +21,12 @@ const Description = styled.p`
   color: #4f200d;
 `;
 
-const Image = styled.img`
+/* const Image = styled.img`
   width: 100%;
   height: auto;
   border-radius: 8px;
   margin-top: 16px;
-`;
+`; */
 
 const PriceSection = styled.div`
   display: flex;
@@ -46,16 +46,21 @@ const Weight = styled.span`
 `;
 interface CardProps {
   name: string;
-  imageUrl: string;
+  /*  imageUrl: string; */
   description: string;
   price: string;
   weight: string;
 }
-const Card = ({ name, imageUrl, description, price, weight }: CardProps) => {
+const Card = ({
+  name,
+  /*  imageUrl, */ description,
+  price,
+  weight,
+}: CardProps) => {
   return (
     <CardWrapper>
       <Title>{name}</Title>
-      <Image src={imageUrl} alt={name} />
+      {/*      <Image src={imageUrl} alt={name} /> */}
       <Description>{description}</Description>
       <PriceSection>
         <Price>{price}</Price>
