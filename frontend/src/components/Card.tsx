@@ -44,28 +44,18 @@ const Weight = styled.span`
   font-size: 1rem;
   color: #4f200d;
 `;
-
-
-interface cardProps {
-  title: string;
+interface CardProps {
+  name: string;
   imageUrl: string;
-  imageAlt: string;
   description: string;
   price: string;
   weight: string;
 }
-const Card = ({
-  title,
-  imageUrl,
-  imageAlt,
-  description,
-  price,
-  weight,
-}: cardProps) => {
+const Card = ({ name, imageUrl, description, price, weight }: CardProps) => {
   return (
     <CardWrapper>
-      <Title>{title}</Title>
-      <Image src={imageUrl} alt={imageAlt} />
+      <Title>{name}</Title>
+      <Image src={imageUrl} alt={name} />
       <Description>{description}</Description>
       <PriceSection>
         <Price>{price}</Price>
