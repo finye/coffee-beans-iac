@@ -4,6 +4,7 @@ import Products from "./components/Products";
 const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
+    font-family: "Open Sans", Sans-serif;
   }
 `;
 
