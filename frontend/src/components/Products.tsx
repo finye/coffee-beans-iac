@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Card from "./Card.tsx";
 import styled from "styled-components";
 
@@ -10,60 +11,49 @@ const CardsContainer = styled.div`
   margin: 0 auto;
 `;
 
-interface CardData {
+const ErrorMessage = styled.div`
+  color: crimson;
+  text-align: center;
+  padding: 20px;
+  margin: 20px;
+`;
+
+interface BeanData {
+  id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  /*   imageUrl: string; */
   price: string;
   weight: string;
 }
 
-const cardData: CardData[] = [
-  {
-    name: "Guji",
-    description:
-        "Vibrant and complex — peach, berries, and a hint of cocoa.",
-    imageUrl: "../coffee.jpg",
-    price: "10.50€",
-    weight: "250 gram",
-  },
-  {
-    name: "Sidamo",
-    description:
-        "Smooth and sweet with balanced fruit and chocolate notes.",
-    imageUrl: "../coffee.jpg",
-    price: "10.50€",
-    weight: "250 gram",
-  },
-  {
-   name: "Yirgacheffe",
-    description:
-        "Floral and citrusy with jasmine aroma — light, bright, and elegant.",
-    imageUrl: "../coffee.jpg",
-    price: "10.50€",
-    weight: "250 gram",
-  },
-  {
-    name: "Harrar",
-    description:
-        "Bold and wild — rich blueberry tones with dark chocolate depth.",
-	imageUrl: "../coffee.jpg",
-    price: "10.50€",
-    weight: "250 gram",
-  },
-];
+const API = import.meta.env.VITE_API_BASE_URL;
 
 const Products = () => {
+  const [beans, setBeans] = useState<BeanData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API}/beans`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.statusText)))
+      .then(setBeans)
+      .catch((err) => setError(String(err)));
+  }, []);
+
+  if (error) {
+    return <ErrorMessage>Failed to load products: {error}</ErrorMessage>;
+  }
+
   return (
     <CardsContainer>
-      {cardData.map((card, index) => (
+      {beans.map((bean) => (
         <Card
-          key={index}
-          name={card.name}
-          imageUrl={card.imageUrl}
-          description={card.description}
-          price={card.price}
-          weight={card.weight}
+          key={bean.id}
+          name={bean.name}
+          /*    imageUrl={bean.imageUrl} */
+          description={bean.description}
+          price={bean.price}
+          weight={bean.weight}
         />
       ))}
     </CardsContainer>
