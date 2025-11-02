@@ -18,7 +18,7 @@ const Title = styled.h2`
 
 const Description = styled.p`
   font-size: 1em;
-  color: rosybrown;
+  color: #4f200d;
 `;
 
 const Image = styled.img`
@@ -28,16 +28,49 @@ const Image = styled.img`
   margin-top: 16px;
 `;
 
-const Card = () => {
+const PriceSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+`;
+
+const Price = styled.span`
+  font-size: 28px;
+  font-weight: 700;
+  color: #4f200d;
+`;
+
+const Weight = styled.span`
+  font-size: 1rem;
+  color: #4f200d;
+`;
+
+
+interface cardProps {
+  title: string;
+  imageUrl: string;
+  imageAlt: string;
+  description: string;
+  price: string;
+  weight: string;
+}
+const Card = ({
+  title,
+  imageUrl,
+  imageAlt,
+  description,
+  price,
+  weight,
+}: cardProps) => {
   return (
     <CardWrapper>
-      <Title>Guji Buna</Title>
-      <Description>
-        Grown in the forested highlands of southern Ethiopia,
-		Guji coffee is complex and lively, featuring notes of peach,
-		berries, and cocoa. A bold yet refined expression of Ethiopian terroir.
-      </Description>
-      <Image src="../coffee.jpg" alt="coffee_package_img" />
+      <Title>{title}</Title>
+      <Image src={imageUrl} alt={imageAlt} />
+      <Description>{description}</Description>
+      <PriceSection>
+        <Price>{price}</Price>
+        <Weight>{weight}</Weight>
+      </PriceSection>
     </CardWrapper>
   );
 };
