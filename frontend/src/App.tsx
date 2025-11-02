@@ -1,5 +1,12 @@
 import Card from "./components/Card.tsx";
-import styled from "styled-components";
+
+import styled, { createGlobalStyle } from "styled-components";
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const CardsContainer = styled.div`
   display: grid;
@@ -8,6 +15,18 @@ const CardsContainer = styled.div`
   padding: 24px;
   max-width: 800px;
   margin: 0 auto;
+`;
+
+const Header = styled.header`
+  position: sticky;
+  background-color: #8b4513;
+  top: 0;
+  padding: 1rem;
+`;
+
+const Title = styled.h2`
+  margin: 0;
+  color: white;
 `;
 
 function App() {
@@ -51,9 +70,10 @@ function App() {
   ];
   return (
     <>
-      <div>
-        <h1>Coffee beans iac</h1>
-      </div>
+      <GlobalStyles />
+      <Header>
+        <Title>Coffee beans iac</Title>
+      </Header>
       <CardsContainer>
         {cardData.map((card, index) => (
           <Card
