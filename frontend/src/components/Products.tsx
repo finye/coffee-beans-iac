@@ -11,11 +11,14 @@ const CardsContainer = styled.div`
   margin: 0 auto;
 `;
 
-const ErrorMessage = styled.div`
-  color: crimson;
+const Message = styled.div`
   text-align: center;
   padding: 20px;
   margin: 20px;
+`;
+
+const ErrorMessage = styled(Message)`
+  color: crimson;
 `;
 
 interface BeanData {
@@ -27,21 +30,42 @@ interface BeanData {
   weight: string;
 }
 
-const API = import.meta.env.VITE_API_BASE_URL;
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Products = () => {
   const [beans, setBeans] = useState<BeanData[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    fetch(`${API}/beans`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.statusText)))
-      .then(setBeans)
-      .catch((err) => setError(String(err)));
+    const fetchBeans = async () => {
+      try {
+        const response = await fetch(`${API_URL}/beans`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setBeans(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load products"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBeans();
   }, []);
 
+  if (loading) {
+    return <Message>Loading products...</Message>;
+  }
+
   if (error) {
-    return <ErrorMessage>Failed to load products: {error}</ErrorMessage>;
+    return <ErrorMessage>{error}</ErrorMessage>;
   }
 
   return (
