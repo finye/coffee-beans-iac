@@ -1,10 +1,11 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
-import * as iam from "aws-cdk-lib/aws-iam";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
+import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 export class BackendStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -45,10 +46,14 @@ export class BackendStack extends cdk.Stack {
     );
 
     // Lambda Function
-    const beansFunction = new lambda.Function(this, "BeansFn", {
-      runtime: lambda.Runtime.NODEJS_18_X,
-      handler: "beans.handler",
-      code: lambda.Code.fromAsset("../backend"),
+    const beansFunction = new NodejsFunction(this, "BeansFn", {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      entry: "../backend/src/beans.ts",
+      handler: "handler",
+      bundling: {
+        externalModules: ["aws-sdk"],
+        minify: true,
+      },
       environment: {
         CLOUDFRONT_URL: distribution.distributionDomainName,
         BUCKET_NAME: imagesBucket.bucketName,
@@ -58,17 +63,33 @@ export class BackendStack extends cdk.Stack {
     // Grant the Lambda function read access to the S3 bucket
     imagesBucket.grantRead(beansFunction);
 
-    // API Gateway
-    const api = new apigateway.RestApi(this, "BeansApi", {
-      restApiName: "Coffee Beans API",
-      defaultCorsPreflightOptions: {
-        allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: apigateway.Cors.ALL_METHODS,
+    const api = new apigwv2.HttpApi(this, "BeansHttpApi", {
+      apiName: "Coffee Beans API",
+      corsPreflight: {
+        allowOrigins: ["*"],
+        allowMethods: [
+          apigwv2.CorsHttpMethod.GET,
+          apigwv2.CorsHttpMethod.OPTIONS,
+        ],
+        allowHeaders: ["Content-Type"],
+        allowCredentials: false,
       },
     });
 
-    // API Gateway Integration
-    const beansIntegration = new apigateway.LambdaIntegration(beansFunction);
-    api.root.addResource("beans").addMethod("GET", beansIntegration);
+    const beansIntegration = new HttpLambdaIntegration(
+      "BeansIntegration",
+      beansFunction
+    );
+
+    api.addRoutes({
+      path: "/beans",
+      methods: [apigwv2.HttpMethod.GET],
+      integration: beansIntegration,
+    });
+
+    new cdk.CfnOutput(this, "BeansApiEndpoint", {
+      value: api.apiEndpoint,
+      description: "HTTP API endpoint URL",
+    });
   }
 }
