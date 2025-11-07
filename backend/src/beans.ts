@@ -4,7 +4,6 @@ interface BeanData {
   id: string;
   name: string;
   description: string;
-  /*   imageUrl: string; */
   price: string;
   weight: string;
 }
@@ -14,7 +13,7 @@ const beans: BeanData[] = [
     id: "Guji-buna-001",
     name: "Guji",
     description: "Vibrant and complex — peach, berries, and a hint of cocoa.",
-    price: "10.50€",
+    price: "25.00€",
     weight: "250 gram",
   },
   {
@@ -29,7 +28,7 @@ const beans: BeanData[] = [
     name: "Yirgacheffe",
     description:
       "Floral and citrusy with jasmine aroma — light, bright, and elegant.",
-    price: "10.50€",
+    price: "20.00€",
     weight: "250 gram",
   },
   {

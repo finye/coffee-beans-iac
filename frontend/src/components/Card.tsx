@@ -21,12 +21,14 @@ const Description = styled.p`
   color: #4f200d;
 `;
 
-/* const Image = styled.img`
+const Image = styled.img`
   width: 100%;
   height: auto;
   border-radius: 8px;
-  margin-top: 16px;
-`; */
+  margin-bottom: 16px;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+`;
 
 const PriceSection = styled.div`
   display: flex;
@@ -46,22 +48,19 @@ const Weight = styled.span`
 `;
 interface CardProps {
   name: string;
-  /*  imageUrl: string; */
   description: string;
   price: string;
   weight: string;
 }
-const Card = ({
-  name,
-  /*  imageUrl, */ description,
-  price,
-  weight,
-}: CardProps) => {
+
+const CDN_URL = import.meta.env.VITE_CDN_URL;
+
+const Card = ({ name, description, price, weight }: CardProps) => {
   return (
     <CardWrapper>
       <Title>{name}</Title>
-      {/*      <Image src={imageUrl} alt={name} /> */}
       <Description>{description}</Description>
+      <Image src={`${CDN_URL}/coffee.jpg`} alt={name} />
       <PriceSection>
         <Price>{price}</Price>
         <Weight>{weight}</Weight>

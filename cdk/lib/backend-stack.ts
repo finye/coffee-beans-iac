@@ -1,8 +1,5 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as s3 from "aws-cdk-lib/aws-s3";
-import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
-import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
@@ -10,40 +7,6 @@ import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations
 export class BackendStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
-    // S3 Bucket for storing images
-    const imagesBucket = new s3.Bucket(this, "ImagesBucket", {
-      bucketName: `coffee-beans-images-${this.account}-${this.region}`,
-      cors: [
-        {
-          allowedMethods: [s3.HttpMethods.GET],
-          allowedOrigins: ["*"],
-          allowedHeaders: ["*"],
-        },
-      ],
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
-    });
-
-    // CloudFront distribution for the images
-    const distribution = new cloudfront.Distribution(
-      this,
-      "ImagesDistribution",
-      {
-        defaultBehavior: {
-          origin: new origins.S3Origin(imagesBucket, {
-            originAccessIdentity: new cloudfront.OriginAccessIdentity(
-              this,
-              "ImagesBucketOAI"
-            ),
-          }),
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-        },
-      }
-    );
 
     // Lambda Function
     const beansFunction = new NodejsFunction(this, "BeansFn", {
@@ -54,14 +17,8 @@ export class BackendStack extends cdk.Stack {
         externalModules: ["aws-sdk"],
         minify: true,
       },
-      environment: {
-        CLOUDFRONT_URL: distribution.distributionDomainName,
-        BUCKET_NAME: imagesBucket.bucketName,
-      },
+      environment: {},
     });
-
-    // Grant the Lambda function read access to the S3 bucket
-    imagesBucket.grantRead(beansFunction);
 
     const api = new apigwv2.HttpApi(this, "BeansHttpApi", {
       apiName: "Coffee Beans API",
