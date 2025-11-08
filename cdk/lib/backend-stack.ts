@@ -1,23 +1,19 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
+import { DockerImageFunction } from "aws-cdk-lib/aws-lambda";
 
 export class BackendStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // Lambda Function
-    const beansFunction = new NodejsFunction(this, "BeansFn", {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      entry: "../backend/src/beans.ts",
-      handler: "handler",
-      bundling: {
-        externalModules: ["aws-sdk"],
-        minify: true,
-      },
-      environment: {},
+    const beansFunction = new DockerImageFunction(this, "BeansFn", {
+      code: lambda.DockerImageCode.fromImageAsset("../backend"),
+      memorySize: 256,
+      timeout: cdk.Duration.seconds(30),
+      logRetention: cdk.aws_logs.RetentionDays.ONE_WEEK,
     });
 
     const api = new apigwv2.HttpApi(this, "BeansHttpApi", {
