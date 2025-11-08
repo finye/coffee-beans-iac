@@ -1,5 +1,4 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-
 interface BeanData {
   id: string;
   name: string;
@@ -52,7 +51,7 @@ export const handler: APIGatewayProxyHandlerV2 = async () => {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Failed to fetch coffee beans",
+        message: "Internal Server Error",
       }),
     };
   }
