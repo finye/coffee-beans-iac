@@ -7,6 +7,7 @@ import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 
 interface FrontendStackProps extends cdk.StackProps {
   siteDistPath: string;
+  apiEndpoint: string;
 }
 
 export class FrontendStack extends cdk.Stack {
@@ -41,14 +42,24 @@ export class FrontendStack extends cdk.Stack {
     });
 
     new s3deploy.BucketDeployment(this, "DeploySite", {
-      sources: [s3deploy.Source.asset(props.siteDistPath)],
+      sources: [
+        s3deploy.Source.asset(props.siteDistPath),
+        s3deploy.Source.jsonData("config.json", {
+          apiBaseUrl: props.apiEndpoint,
+          cdnUrl: `https://${distro.distributionDomainName}`,
+        }),
+      ],
       destinationBucket: siteBucket,
       distribution: distro,
       distributionPaths: ["/*"],
     });
 
     new cdk.CfnOutput(this, "SiteUrl", {
-      value: `https://${distro.domainName}`,
+      value: `https://${distro.distributionDomainName}`,
+    });
+
+    new cdk.CfnOutput(this, "ApiEndpoint", {
+      value: props.apiEndpoint,
     });
   }
 }

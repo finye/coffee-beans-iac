@@ -5,6 +5,8 @@ import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations
 import { DockerImageFunction } from "aws-cdk-lib/aws-lambda";
 
 export class BackendStack extends cdk.Stack {
+  public readonly apiEndpoint: string;
+
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -39,6 +41,8 @@ export class BackendStack extends cdk.Stack {
       methods: [apigwv2.HttpMethod.GET],
       integration: beansIntegration,
     });
+
+    this.apiEndpoint = api.apiEndpoint;
 
     new cdk.CfnOutput(this, "BeansApiEndpoint", {
       value: api.apiEndpoint,

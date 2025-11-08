@@ -51,16 +51,15 @@ interface CardProps {
   description: string;
   price: string;
   weight: string;
+  cdnUrl: string;
 }
 
-const CDN_URL = import.meta.env.VITE_CDN_URL;
-
-const Card = ({ name, description, price, weight }: CardProps) => {
+const Card = ({ name, description, price, weight, cdnUrl }: CardProps) => {
   return (
     <CardWrapper>
       <Title>{name}</Title>
       <Description>{description}</Description>
-      <Image src={`${CDN_URL}/coffee.jpg`} alt={name} />
+      <Image src={`${cdnUrl}/coffee.jpg`} alt={name} />
       <PriceSection>
         <Price>{price}</Price>
         <Weight>{weight}</Weight>
