@@ -14,7 +14,7 @@ const backend = new BackendStack(app, "CoffeeCo-Backend", { env });
 const frontend = new FrontendStack(app, "CoffeeCo-Frontend", {
   env,
   siteDistPath: "../frontend/dist",
+  apiEndpoint: backend.apiEndpoint,
 });
 
-// Make it easy to see the outputs in the same deploy
 frontend.addDependency(backend);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Card from "./Card.tsx";
 import styled from "styled-components";
+import { getConfig } from "../config";
 
 const CardsContainer = styled.div`
   display: grid;
@@ -25,23 +26,22 @@ interface BeanData {
   id: string;
   name: string;
   description: string;
-  /*   imageUrl: string; */
   price: string;
   weight: string;
 }
-
-const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Products = () => {
   const [beans, setBeans] = useState<BeanData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [cdnUrl, setCdnUrl] = useState<string>("");
 
   useEffect(() => {
     const fetchBeans = async () => {
       try {
-        const response = await fetch(`${API_URL}/beans`);
-
+        const config = await getConfig();
+        setCdnUrl(config.cdnUrl);
+        const response = await fetch(`${config.apiBaseUrl}/beans`);
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
         }
@@ -74,10 +74,10 @@ const Products = () => {
         <Card
           key={bean.id}
           name={bean.name}
-          /*    imageUrl={bean.imageUrl} */
           description={bean.description}
           price={bean.price}
           weight={bean.weight}
+          cdnUrl={cdnUrl}
         />
       ))}
     </CardsContainer>
