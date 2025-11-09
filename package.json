@@ -1,0 +1,17 @@
+{
+  "name": "coffee-beans-iac",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../cdk && npm install && cd ..",
+    "build:frontend": "cd frontend && npm run build",
+    "deploy:backend": "cd cdk && npm run cdk deploy CoffeeCo-Backend",
+    "deploy:frontend": "cd cdk && npm run cdk deploy CoffeeCo-Frontend",
+    "deploy:all": "npm run build:frontend && npm run deploy:backend && npm run deploy:frontend",
+    "deploy": "npm run deploy:all",
+    "destroy:backend": "cd cdk && npm run cdk destroy CoffeeCo-Backend",
+    "destroy:frontend": "cd cdk && npm run cdk destroy CoffeeCo-Frontend",
+    "destroy:all": "npm run destroy:frontend && npm run destroy:backend"
+  },
+  "description": "Coffee Beans IaC project with AWS CDK"
+}
