@@ -7,12 +7,12 @@ This project was done as a pre-assignment for the OP Kiitorata Trainee Program �
 ```
 coffee-beans-iac/
 ├── backend/           # Lambda function code
-├── cdk/              # Infrastructure code
+├── cdk/               # Infrastructure code
 │   ├── bin/
 │   └── lib/
 │       ├── backend-stack.ts
 │       └── frontend-stack.ts
-└── frontend/         # React application
+└── frontend/          # React + TypeScript application
 ```
 
 The infrastructure code is built with AWS CDK and it consists of two main stacks.
@@ -30,6 +30,14 @@ The infrastructure code is built with AWS CDK and it consists of two main stacks
 - **CloudFront Distribution** - Provides a global CDN layer for fast, cached content delivery.
 
 - **Automatic Configuration** - During deployment, a config.json file is generated and uploaded to S3 containing runtime settings such as the API Gateway endpoint and CloudFront distribution URL.
+
+### Backend Application
+
+- **Node.js Lambda Handler** - Serverless REST API serving coffee beans data
+
+### Frontend Application
+
+- **React + TypeScript + styled-components** – Modern frontend built with React and TypeScript, styled using styled-components.
 
 ## Prerequisites
 
